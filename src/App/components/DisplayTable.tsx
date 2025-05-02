@@ -7,7 +7,7 @@ const DisplayTable = () => {
   const trainsState = useQuery({
     queryKey: ['trains'],
     queryFn: () => {
-      return Axios.get("http://localhost:3000")
+      return Axios.get("http://localhost:3000/train")
     },
   });
 
@@ -19,9 +19,7 @@ const DisplayTable = () => {
     }
   })
 
-  return <>
-    <DataGrid rows={trainsState?.data?.data || []} columns={columnNames} />
-  </>;
+  return <DataGrid rows={trainsState?.data?.data || []} columns={columnNames} />;
 }
 
 export {DisplayTable}

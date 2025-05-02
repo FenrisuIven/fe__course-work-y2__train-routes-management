@@ -1,29 +1,27 @@
 import Axios from 'axios';
-import {useEffect, useState} from "react";
+import {useQuery} from "@tanstack/react-query";
 
-import {DataGrid, GridRowsProp, GridColDef} from '@mui/x-data-grid';
+import {DataGrid, GridColDef} from '@mui/x-data-grid';
 
 const DisplayTable = () => {
-  const [data, setData] = useState<GridRowsProp>()
+  const trainsState = useQuery({
+    queryKey: ['trains'],
+    queryFn: () => {
+      return Axios.get("http://localhost:3000")
+    },
+  });
 
-  useEffect(() => {
-    Axios.get("http://localhost:3000")
-      .then((response) => {
-        const rows: object[] = response.data;
-        if (Array.isArray(rows) && rows.length > 0 && Object.keys(rows[0]).length > 0) {
-          setData(rows);
-        }
-      })
-      .catch((e) => console.log(e))
-  }, []);
-
-  useEffect(() => {
-    if (data) {
-      console.log({data})
+  const columnNames = Object.keys(trainsState?.data?.data?.[0] || {}).map((columnName): GridColDef => {
+    return {
+      field: columnName,
+      headerName: columnName,
+      width: 150,
     }
-  }, [data])
+  })
 
-  return <></>
+  return <>
+    <DataGrid rows={trainsState?.data?.data || []} columns={columnNames} />
+  </>;
 }
 
 export {DisplayTable}

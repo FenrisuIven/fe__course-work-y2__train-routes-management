@@ -2,16 +2,17 @@ import Axios from 'axios';
 import {useQuery} from "@tanstack/react-query";
 
 import {DataGrid, GridColDef} from '@mui/x-data-grid';
+import {LinearProgress, SxProps} from "@mui/material";
 
-const DisplayTable = () => {
-  const trainsState = useQuery({
+const DisplayTable = ({sx}: { sx?: SxProps }) => {
+  const {isLoading, isRefetching, data: trainData} = useQuery({
     queryKey: ['trains'],
     queryFn: () => {
-      return Axios.get("http://localhost:3000/train")
+      return Axios.get("http://localhost:3000/train?include=tracker")
     },
   });
 
-  const columnNames = Object.keys(trainsState?.data?.data?.[0] || {}).map((columnName): GridColDef => {
+  const columnNames = Object.keys(trainData?.data?.[0] || {}).map((columnName): GridColDef => {
     return {
       field: columnName,
       headerName: columnName,
@@ -19,7 +20,12 @@ const DisplayTable = () => {
     }
   })
 
-  return <DataGrid rows={trainsState?.data?.data || []} columns={columnNames} />;
+  return (
+    <>
+      {(isLoading || isRefetching) && <LinearProgress />}
+      <DataGrid rows={trainData?.data || []} columns={columnNames} sx={sx} />
+    </>
+  );
 }
 
 export {DisplayTable}

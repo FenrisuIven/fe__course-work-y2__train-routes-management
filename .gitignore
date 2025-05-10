@@ -1,3 +1,5 @@
 /node_modules/
 
 .idea
+/eslint.config.js
+/vite.config.ts

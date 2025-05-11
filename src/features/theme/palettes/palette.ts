@@ -1,17 +1,11 @@
 const palette = {
-  background: {
-    paper: '#fff',
+  primary: {
+    main: "#7CAE7A",
+    color: "#fff",
   },
-  text: {
-    primary: '#020f1c',
-    secondary: '#46505A',
-  },
-  action: {
-    active: '#001E3C',
-  },
-  success: {
-    main: '#001E3C',
-    dark: '#009688',
+  secondary: {
+    main: "#6CA6C1",
+    color: "#e4eef3"
   },
 }
 

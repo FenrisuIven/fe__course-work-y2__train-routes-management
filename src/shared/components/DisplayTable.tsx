@@ -1,29 +1,38 @@
-import Axios from 'axios';
-import {useQuery} from "@tanstack/react-query";
+import {DataGrid, GridColDef, GridRenderCellParams, GridRowsProp} from '@mui/x-data-grid';
+import {Chip, LinearProgress, SxProps} from "@mui/material";
 
-import {DataGrid, GridColDef} from '@mui/x-data-grid';
-import {LinearProgress, SxProps} from "@mui/material";
-
-const DisplayTable = ({sx}: { sx?: SxProps }) => {
-  const {isLoading, isRefetching, data: trainData} = useQuery({
-    queryKey: ['trains'],
-    queryFn: () => {
-      return Axios.get("http://localhost:3000/train?include=tracker&remap")
-    },
-  });
-
-  const columnNames = Object.keys(trainData?.data?.[0] || {}).map((columnName): GridColDef => {
+const DisplayTable = ({rows, sx, status}: {
+  rows: GridRowsProp,
+  sx?: SxProps,
+  status: {
+    isLoading: boolean,
+    isRefetching: boolean,
+  }
+}) => {
+  const columnNames = Object.keys(rows?.[0] || {}).map((columnName): GridColDef => {
     return {
       field: columnName,
       headerName: columnName,
       width: 150,
+      renderCell: (params: GridRenderCellParams) => {
+        return <>
+          {params.value === null ? <Chip label="NULL" sx={{borderRadius: '0', paddingTop: '3px'}} /> :
+            <span>{params.value.toString()}</span>}
+        </>
+      }
     }
   })
 
   return (
     <>
-      {(isLoading || isRefetching) && <LinearProgress />}
-      <DataGrid rows={trainData?.data || []} columns={columnNames} sx={sx} />
+      {
+        (status.isLoading || status.isRefetching) ?
+          <LinearProgress color="secondary" /> : <div style={{paddingTop: "4px"}} />
+      }
+      <DataGrid rows={rows} columns={columnNames} sx={{
+        ...sx,
+        border: 0,
+      }} />
     </>
   );
 }

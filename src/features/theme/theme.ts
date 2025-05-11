@@ -1,7 +1,7 @@
 import {createTheme} from "@mui/material";
 
 import {palette} from "./palettes";
-import {MuiAppBar} from './component-overrides'
+import {MuiAppBar, MuiTextField} from './component-overrides'
 
 const theme = createTheme({
     palette: {...palette},

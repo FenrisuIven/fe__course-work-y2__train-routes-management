@@ -8,7 +8,7 @@ const DisplayTable = ({sx}: { sx?: SxProps }) => {
   const {isLoading, isRefetching, data: trainData} = useQuery({
     queryKey: ['trains'],
     queryFn: () => {
-      return Axios.get("http://localhost:3000/train?include=tracker")
+      return Axios.get("http://localhost:3000/train?include=tracker&remap")
     },
   });
 

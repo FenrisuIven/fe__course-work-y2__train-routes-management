@@ -1,17 +1,17 @@
 import {DisplayTable} from "../../shared/components/DisplayTable.tsx";
 import useNullableContext from "../../lib/hooks/useNullableContext.ts";
 import SearchContext from "../../features/search/context/SearchContext.ts";
-import {useEffect, useState} from "react";
-import {fetchApiResponse} from "../../lib/fetchApiResponse.ts";
 import {useQuery} from "@tanstack/react-query";
+import {fetchApiResponse} from "../../lib/fetchApiResponse.ts";
+import {useEffect, useState} from "react";
 
-const TrainsPage = () => {
+const StationPage = () => {
   const {searchValue, setDisplaySearchEnv, setSearchByOptions} = useNullableContext(SearchContext);
-  setDisplaySearchEnv('trains')
+  setDisplaySearchEnv('station');
 
   const {data: apiResponse, isRefetching, refetch} = useQuery({
     queryKey: ['data'],
-    queryFn: () => fetchApiResponse.get({url: 'http://localhost:3000/train'}),
+    queryFn: () => fetchApiResponse.get({url: 'http://localhost:3000/station'}),
     enabled: false,
   });
 
@@ -29,7 +29,7 @@ const TrainsPage = () => {
 
   useEffect(() => {
     if (apiResponse?.data) {
-      const values = Object.keys(apiResponse.data[0]).filter(key => !key.toLowerCase().includes('id'));
+      const values = Object.keys(apiResponse.data[0]).slice(1);
       setSearchByOptions(values);
     }
   }, [apiResponse?.data])
@@ -42,7 +42,7 @@ const TrainsPage = () => {
         isLoading: loading, isRefetching
       }}
     />
-  </>;
+  </>
 }
 
-export default TrainsPage;
+export default StationPage

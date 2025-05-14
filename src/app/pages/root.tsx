@@ -7,9 +7,18 @@ import SearchContext from "../../features/search/context/SearchContext.ts";
 
 const Root = () => {
   const [searchValue, setSearchValue] = useState("");
+  const [displaySearchEnv, setDisplaySearchEnv] = useState("");
+  const [searchByOptions, setSearchByOptions] = useState<string[]>([]);
 
   return <>
-    <SearchContext.Provider value={{searchValue, setSearchValue}}>
+    <SearchContext.Provider value={{
+      searchValue,
+      displaySearchEnv,
+      searchByOptions,
+      setSearchValue,
+      setDisplaySearchEnv,
+      setSearchByOptions
+    }}>
       <Header />
       <div className="header__outlet-container">
         <Outlet />

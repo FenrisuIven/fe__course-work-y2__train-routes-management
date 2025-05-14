@@ -4,9 +4,10 @@ import SearchContext from "../context/SearchContext.ts";
 
 import SearchIcon from '@mui/icons-material/Search';
 import {SyntheticEvent} from "react";
+import SearchParameter from "./SearchParameter.tsx";
 
 const SearchBar = () => {
-  const {setSearchValue} = useNullableContext(SearchContext);
+  const {setSearchValue, displaySearchEnv, searchByOptions} = useNullableContext(SearchContext);
 
   const handleClose = (e: SyntheticEvent) => {
     setSearchValue((e.target as HTMLInputElement).value);
@@ -14,11 +15,11 @@ const SearchBar = () => {
 
   return (
     <TextField
-      hiddenLabel
       fullWidth
       variant="standard"
       onBlur={handleClose}
       color="secondary"
+      label={`Search in ${displaySearchEnv}`}
       slotProps={{
         input: {
           startAdornment: (
@@ -28,6 +29,15 @@ const SearchBar = () => {
               </InputAdornment>
             </>
           ),
+          endAdornment: (
+            <>
+              <InputAdornment position="end">
+                <SearchParameter options={searchByOptions} sx={{
+                  marginTop: "-14px"
+                }} />
+              </InputAdornment>
+            </>
+          )
         },
       }}
     />

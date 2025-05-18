@@ -1,13 +1,18 @@
 import {InputAdornment, TextField} from "@mui/material";
-import useNullableContext from "../../../lib/hooks/useNullableContext.ts";
-import SearchContext from "../context/SearchContext.ts";
+import useNullableContext from "../../lib/hooks/useNullableContext.ts";
 
 import SearchIcon from '@mui/icons-material/Search';
 import {SyntheticEvent} from "react";
-import SearchParameter from "./SearchParameter.tsx";
+import SearchParameter from "./components/SearchParameter.tsx";
+import RootStoreCtx from "../../stores/rootStore/rootStoreCtx.ts";
+import {observer} from "mobx-react-lite";
 
-const SearchBar = () => {
-  const {setSearchValue, displaySearchEnv, searchByOptions} = useNullableContext(SearchContext);
+const SearchBar = observer(() => {
+  const {
+    setSearchValue,
+    displaySearchEnv,
+    searchByOptions
+  } = useNullableContext(RootStoreCtx).SearchDataStore;
 
   const handleClose = (e: SyntheticEvent) => {
     setSearchValue((e.target as HTMLInputElement).value);
@@ -42,6 +47,6 @@ const SearchBar = () => {
       }}
     />
   );
-}
+})
 
 export {SearchBar}

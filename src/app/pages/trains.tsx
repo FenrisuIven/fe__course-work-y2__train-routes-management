@@ -1,12 +1,13 @@
 import {DisplayTable} from "../../shared/components/DisplayTable.tsx";
 import useNullableContext from "../../lib/hooks/useNullableContext.ts";
-import SearchContext from "../../features/search/context/SearchContext.ts";
 import {useEffect, useState} from "react";
 import {fetchApiResponse} from "../../lib/fetchApiResponse.ts";
 import {useQuery} from "@tanstack/react-query";
+import RootStoreCtx from "../../stores/rootStore/rootStoreCtx.ts";
+import {observer} from "mobx-react-lite";
 
-const TrainsPage = () => {
-  const {searchValue, setDisplaySearchEnv, setSearchByOptions} = useNullableContext(SearchContext);
+const TrainsPage = observer(() => {
+  const {searchValue, setDisplaySearchEnv, setSearchByOptions} = useNullableContext(RootStoreCtx).SearchDataStore;
   setDisplaySearchEnv('trains')
 
   const {data: apiResponse, isRefetching, refetch} = useQuery({
@@ -24,7 +25,7 @@ const TrainsPage = () => {
         console.log('SearchBar refetch error', e)
       });
       setLoading(false);
-    }, 2000)
+    }, 1000)
   }, [searchValue]);
 
   useEffect(() => {
@@ -43,6 +44,6 @@ const TrainsPage = () => {
       }}
     />
   </>;
-}
+})
 
 export default TrainsPage;

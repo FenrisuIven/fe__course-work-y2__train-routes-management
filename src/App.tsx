@@ -3,6 +3,7 @@ import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import {theme} from './features/theme'
 import {RouterProvider} from "react-router";
 import {router} from "./app/routing";
+import {RootStoreProvider} from "./stores/rootStore";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -17,10 +18,12 @@ const queryClient = new QueryClient({
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <RouterProvider router={router} />
-      </ThemeProvider>
+      <RootStoreProvider>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <RouterProvider router={router} />
+        </ThemeProvider>
+      </RootStoreProvider>
     </QueryClientProvider>
   )
 }

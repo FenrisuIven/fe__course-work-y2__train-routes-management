@@ -3,8 +3,20 @@ import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import {SearchBar} from '../search/SearchBar.tsx';
+import {Menu, MenuItem} from "@mui/material";
+import {useState, MouseEvent} from "react";
+import {NavLink} from "react-router";
 
 const Header = () => {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   return (<>
     <AppBar position="sticky">
       <Toolbar>
@@ -13,9 +25,18 @@ const Header = () => {
           edge="start"
           aria-label="menu"
           sx={{mr: 2}}
+          onClick={handleClick}
         >
           <MenuIcon />
         </IconButton>
+        <Menu
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleClose}
+        >
+          <MenuItem><NavLink to="/trains">Trains</NavLink></MenuItem>
+          <MenuItem><NavLink to="/station">Station</NavLink></MenuItem>
+        </Menu>
         <SearchBar />
       </Toolbar>
     </AppBar>

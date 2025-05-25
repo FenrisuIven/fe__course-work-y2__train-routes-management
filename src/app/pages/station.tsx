@@ -13,7 +13,7 @@ const StationPage = observer(() => {
     setDisplaySearchEnv,
     setSearchByOptions
   } = useNullableContext(RootStoreCtx).SearchDataStore;
-  setDisplaySearchEnv('station');
+  setDisplaySearchEnv('train');
 
   const {data: apiResponse, isRefetching, refetch} = useQuery({
     queryKey: ['data'],

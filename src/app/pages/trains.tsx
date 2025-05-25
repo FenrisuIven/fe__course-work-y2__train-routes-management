@@ -5,6 +5,7 @@ import {fetchApiResponse} from "../../lib/fetchApiResponse.ts";
 import {useQuery} from "@tanstack/react-query";
 import RootStoreCtx from "../../stores/rootStore/rootStoreCtx.ts";
 import {observer} from "mobx-react-lite";
+import {AddTrainForm} from "../../features/train/forms/AddTrainForm.tsx";
 
 const TrainsPage = observer(() => {
   const {searchValue, setDisplaySearchEnv, setSearchByOptions} = useNullableContext(RootStoreCtx).SearchDataStore;
@@ -30,7 +31,7 @@ const TrainsPage = observer(() => {
 
   useEffect(() => {
     if (apiResponse?.data) {
-      const values = Object.keys(apiResponse.data[0]).filter(key => !key.toLowerCase().includes('id'));
+      const values = Object.keys(apiResponse.data.data.rows[0]).filter(key => !key.toLowerCase().includes('id'));
       setSearchByOptions(values);
     }
   }, [apiResponse?.data])
@@ -38,11 +39,12 @@ const TrainsPage = observer(() => {
   return <>
     <DisplayTable
       sx={{flex: 3}}
-      rows={apiResponse?.data}
+      rows={apiResponse?.data?.data.rows || []}
       status={{
         isLoading: loading, isRefetching
       }}
     />
+    <AddTrainForm />
   </>;
 })
 

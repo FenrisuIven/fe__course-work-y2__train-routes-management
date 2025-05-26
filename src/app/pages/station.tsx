@@ -5,6 +5,7 @@ import {observer} from "mobx-react-lite";
 import {fetchApiResponse} from "../../lib/fetchApiResponse.ts";
 import {useEffect, useState} from "react";
 import RootStoreCtx from "../../stores/rootStore/rootStoreCtx.ts";
+import {TempViewStationPos} from "../../features/station/forms/TempViewStationPos.tsx";
 
 const StationPage = observer(() => {
   const {
@@ -13,7 +14,7 @@ const StationPage = observer(() => {
     setDisplaySearchEnv,
     setSearchByOptions
   } = useNullableContext(RootStoreCtx).SearchDataStore;
-  setDisplaySearchEnv('train');
+  setDisplaySearchEnv('stations');
 
   const {data: apiResponse, isRefetching, refetch} = useQuery({
     queryKey: ['data'],
@@ -35,7 +36,8 @@ const StationPage = observer(() => {
 
   useEffect(() => {
     if (apiResponse?.data) {
-      const values = Object.keys(apiResponse.data[0]).slice(1);
+      console.log({apiResponse})
+      const values = Object.keys(apiResponse.data.rows[0] || {}).slice(1);
       setSearchByOptions(values);
     }
   }, [apiResponse?.data])
@@ -45,13 +47,16 @@ const StationPage = observer(() => {
   }, [searchByOptions])
 
   return <>
-    <DisplayTable
-      sx={{flex: 3}}
-      rows={apiResponse?.data}
-      status={{
-        isLoading: loading, isRefetching
-      }}
-    />
+    <div style={{display: 'flex', flexDirection: 'column', gap: '0.2rem'}}>
+      <DisplayTable
+        sx={{flex: 3}}
+        rows={apiResponse?.data?.rows || []}
+        status={{
+          isLoading: loading, isRefetching
+        }}
+      />
+      <TempViewStationPos />
+    </div>
   </>
 })
 

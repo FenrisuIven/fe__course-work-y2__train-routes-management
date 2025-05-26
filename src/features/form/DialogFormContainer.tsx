@@ -2,7 +2,7 @@ import {Button, Dialog, DialogActions, DialogTitle, DialogContent} from "@mui/ma
 import {PropsWithChildren, useState} from "react";
 import {DialogFormParams} from "../types";
 
-const DialogFormContainer = ({children, buttons, title}: DialogFormParams & PropsWithChildren) => {
+const DialogFormContainer = ({children, buttons, title, className}: DialogFormParams & PropsWithChildren) => {
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
@@ -18,26 +18,34 @@ const DialogFormContainer = ({children, buttons, title}: DialogFormParams & Prop
       Open alert dialog
     </Button>
     <Dialog open={open}>
-      <DialogTitle>
-        {title}
-      </DialogTitle>
-      <DialogContent>
-        {children}
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={() => {
-          buttons?.cancel?.handler();
-          handleClose();
-        }}>
-          {buttons?.cancel?.label || 'Cancel'}
-        </Button>
-        <Button onClick={() => {
-          buttons?.confirm?.handler();
-          handleClose();
-        }} autoFocus type={buttons?.confirm?.type || 'button'}>
-          {buttons?.confirm?.label || 'Confirm'}
-        </Button>
-      </DialogActions>
+      <div className={className}>
+        <DialogTitle>
+          {title}
+        </DialogTitle>
+        <DialogContent>
+          {children}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => {
+            buttons?.cancel?.handler();
+            handleClose();
+          }}>
+            {buttons?.cancel?.label || 'Cancel'}
+          </Button>
+          <Button
+            autoFocus
+            type={buttons?.confirm?.type || 'button'}
+            onClick={async () => {
+              const status = await buttons?.confirm?.handler();
+              console.log(status);
+              if (status?.isInputValid) {
+                handleClose();
+              }
+            }}>
+            {buttons?.confirm?.label || 'Confirm'}
+          </Button>
+        </DialogActions>
+      </div>
     </Dialog>
   </>
 }

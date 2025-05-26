@@ -1,14 +1,17 @@
+import {FormValidationStatus} from "./FormValidationStatus.ts";
+
 export type DialogFormParams = {
   title: string;
   buttons?: {
     cancel?: {
       label: string;
-      handler: () => void;
+      handler: () => FormValidationStatus | void;
     },
     confirm?: {
       label: string;
       type?: 'submit' | 'button';
-      handler: () => void;
+      handler: () => Promise<FormValidationStatus>;
     }
   };
+  className?: string;
 }

@@ -1,4 +1,4 @@
-import {makeAutoObservable} from 'mobx';
+import {makeAutoObservable, action} from 'mobx';
 
 class SearchDataStore {
   searchValue: string = "";
@@ -10,10 +10,10 @@ class SearchDataStore {
     makeAutoObservable(this);
   }
 
-  setSearchValue = (value: string) => this.searchValue = value;
-  setDisplaySearchEnv = (value: string) => this.displaySearchEnv = value;
-  setSearchByOptions = (value: string[]) => this.searchByOptions = value;
-  setSearchBy = (value: string) => this.searchBy = value;
+  setSearchValue = action('setSearchValue', (value: string) => this.searchValue = value)
+  setDisplaySearchEnv = action('setDisplaySearchEnv', (value: string) => this.displaySearchEnv = value)
+  setSearchByOptions = action('setSearchByOptions', (value: string[]) => this.searchByOptions = value)
+  setSearchBy = action('setSearchBy', (value: string) => this.searchBy = value)
 }
 
 export {SearchDataStore}

@@ -1,4 +1,5 @@
 import {FormValidationStatus} from "./FormValidationStatus.ts";
+import {APIResponse} from "./APIResponse.ts";
 
 export type DialogFormParams = {
   title: string;
@@ -14,4 +15,5 @@ export type DialogFormParams = {
     }
   };
   className?: string;
+  onSubmit?: () => Promise<APIResponse>;
 }

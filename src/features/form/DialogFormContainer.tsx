@@ -1,8 +1,9 @@
 import {Button, Dialog, DialogActions, DialogTitle, DialogContent} from "@mui/material";
 import {PropsWithChildren, useState} from "react";
 import {DialogFormParams} from "../types";
+import {APIResponse} from "../types/APIResponse.ts";
 
-const DialogFormContainer = ({children, buttons, title, className}: DialogFormParams & PropsWithChildren) => {
+const DialogFormContainer = ({children, buttons, title, className, onSubmit}: DialogFormParams & PropsWithChildren) => {
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
@@ -37,8 +38,15 @@ const DialogFormContainer = ({children, buttons, title, className}: DialogFormPa
             type={buttons?.confirm?.type || 'button'}
             onClick={async () => {
               const status = await buttons?.confirm?.handler();
-              console.log(status);
+
               if (status?.isInputValid) {
+                if (onSubmit) {
+                  const response: APIResponse = await onSubmit();
+                  if (response.error) {
+                    console.error('Error submitting form:', response);
+                    return;
+                  }
+                }
                 handleClose();
               }
             }}>

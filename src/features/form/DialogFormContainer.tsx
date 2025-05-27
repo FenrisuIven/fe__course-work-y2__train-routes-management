@@ -4,7 +4,7 @@ import {DialogFormParams} from "../types";
 import {APIResponse} from "../types/APIResponse.ts";
 
 const DialogFormContainer = ({children, buttons, title, className, onSubmit}: DialogFormParams & PropsWithChildren) => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
 
   const handleClickOpen = () => {
     setOpen(true);

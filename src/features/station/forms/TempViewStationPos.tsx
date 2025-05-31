@@ -10,31 +10,28 @@ import {useEffect} from "react";
 import {GeoJSON} from 'geojson';
 
 const TempViewStationPos = () => {
-  const {data: testStop, isLoading} = useQuery({
+  const {data: stops, isLoading} = useQuery({
     queryKey: ['testStop'],
     queryFn: async () => {
       const response = await Axios.get<APIResponse>('http://localhost:3000/trainstop?include=station');
       console.log({response})
-      return response?.data?.data.rows[2] as { type: string, stopPosition: number[] };
+      return response?.data?.data.rows as { type: string, stopPosition: number[] }[];
     }
   });
 
-  useEffect(() => {
-    console.log({testStop})
-  }, [testStop]);
-
   const geojson: GeoJSON = {
     type: 'FeatureCollection',
-    features: [
-      {
-        type: 'Feature',
-        geometry: {
-          type: 'Point',
-          coordinates: testStop?.stopPosition || []
-        },
-        properties: {title: '915 Front Street, San Francisco, California'}
-      }
-    ]
+    features:
+      stops?.filter(stop => Boolean(stop) && Boolean(stop.stopPosition))
+        .map(stop => ({
+            type: 'Feature',
+            geometry: {
+              type: 'Point',
+              coordinates: stop?.stopPosition || []
+            },
+            properties: {}
+          })
+        ) || []
   };
 
   const layerStyle = {
@@ -52,12 +49,12 @@ const TempViewStationPos = () => {
         <Map
           mapboxAccessToken="pk.eyJ1IjoiZmVucmlzdWx2ZW4iLCJhIjoiY21iN3o3ZHExMDc4MTJrc2JiOGFmaDA1MiJ9.eSPe52_A7Sxt5-xK6DW5CQ"
           initialViewState={{
-            longitude: testStop?.stopPosition[0],
-            latitude: testStop?.stopPosition[1],
+            longitude: 32.064470,
+            latitude: 49.441325,
             zoom: 9
           }}
           style={{minWidth: '32rem', minHeight: '45rem'}}
-          mapStyle="mapbox://styles/fenrisulven/cmb5gv7qq00lj01qx9l8d1r9q/draft"
+          mapStyle="mapbox://styles/mapbox/streets-v11"
           interactiveLayerIds={['building']}
           onClick={(e) => {
             console.log({e, features: e.features})

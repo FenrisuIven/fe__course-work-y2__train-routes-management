@@ -16,7 +16,7 @@ const DialogFormContainer = ({children, buttons, title, className, onSubmit}: Di
 
   return <>
     <Button variant="outlined" onClick={handleClickOpen}>
-      Open alert dialog
+      {title}
     </Button>
     <Dialog open={open}>
       <div className={className}>

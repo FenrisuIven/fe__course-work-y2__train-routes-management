@@ -6,6 +6,7 @@ import {fetchApiResponse} from "../../lib/fetchApiResponse.ts";
 import {useEffect, useState} from "react";
 import RootStoreCtx from "../../stores/rootStore/rootStoreCtx.ts";
 import {TempViewStationPos} from "../../features/station/forms/TempViewStationPos.tsx";
+import {Divider} from "@mui/material";
 
 const StationPage = observer(() => {
   const {
@@ -47,7 +48,7 @@ const StationPage = observer(() => {
   }, [searchByOptions])
 
   return <>
-    <div style={{display: 'flex', flexDirection: 'column', gap: '0.2rem'}}>
+    <div style={{display: 'flex', flexDirection: 'column', gap: '0.2rem', height: '100%'}}>
       <DisplayTable
         sx={{flex: 3}}
         rows={apiResponse?.data?.rows || []}
@@ -55,7 +56,10 @@ const StationPage = observer(() => {
           isLoading: loading, isRefetching
         }}
       />
-      <TempViewStationPos />
+      <Divider />
+      <div style={{display: 'flex', gap: '0.5rem', padding: '0.5rem'}}>
+        <TempViewStationPos />
+      </div>
     </div>
   </>
 })

@@ -6,7 +6,7 @@ import {useQuery} from "@tanstack/react-query";
 import RootStoreCtx from "../../stores/rootStore/rootStoreCtx.ts";
 import {observer} from "mobx-react-lite";
 import {AddTrainForm} from "../../features/train/forms/AddTrainForm.tsx";
-import {Switch} from "@mui/material";
+import {Divider, Switch} from "@mui/material";
 import {TrainData} from "../../features/train/types/TrainData.ts";
 
 const TrainsPage = observer(() => {
@@ -39,24 +39,29 @@ const TrainsPage = observer(() => {
   }, [apiResponse?.data])
 
   return <>
-    <DisplayTable
-      sx={{flex: 3}}
-      rows={apiResponse?.data?.rows || []}
-      status={{
-        isLoading: loading, isRefetching
-      }}
-      renderCells={[
-        {
-          columnName: 'active',
-          component: (value: TrainData) => {
-            return <Switch defaultChecked={value.active} onChange={(e) => {
-              console.log(`Train ${value.id} active status changed to: ${e.target.checked}`);
-            }} />
+    <div style={{display: 'flex', flexDirection: 'column', gap: '0.2rem', height: '100%'}}>
+      <DisplayTable
+        sx={{flex: 3}}
+        rows={apiResponse?.data?.rows || []}
+        status={{
+          isLoading: loading, isRefetching
+        }}
+        renderCells={[
+          {
+            columnName: 'active',
+            component: (value: TrainData) => {
+              return <Switch defaultChecked={value.active} onChange={(e) => {
+                console.log(`Train ${value.id} active status changed to: ${e.target.checked}`);
+              }} />
+            }
           }
-        }
-      ]}
-    />
-    <AddTrainForm />
+        ]}
+      />
+      <Divider />
+      <div style={{display: 'flex', gap: '0.5rem', padding: '0.5rem'}}>
+        <AddTrainForm />
+      </div>
+    </div>
   </>;
 })
 

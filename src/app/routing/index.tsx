@@ -2,6 +2,7 @@ import {createBrowserRouter, Navigate} from "react-router";
 import Root from "../pages/root.tsx";
 import TrainsPage from "../pages/trains.tsx";
 import StationPage from "../pages/station.tsx";
+import RoutesPage from "../pages/routes.tsx";
 
 const router = createBrowserRouter([
   {
@@ -14,8 +15,11 @@ const router = createBrowserRouter([
       path: 'trains',
       Component: TrainsPage
     }, {
-      path: 'station',
+      path: 'stations',
       Component: StationPage
+    }, {
+      path: 'routes',
+      Component: RoutesPage
     }
     ]
   }

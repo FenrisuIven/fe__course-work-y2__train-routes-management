@@ -15,5 +15,5 @@ export type DialogFormParams = {
     }
   };
   className?: string;
-  onSubmit?: () => Promise<APIResponse>;
+  onSubmit?: (data: Record<string, any>) => Promise<APIResponse>;
 }

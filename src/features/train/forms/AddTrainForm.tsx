@@ -49,6 +49,10 @@ const AddTrainForm = () => {
           }
         },
       }}
+      onSubmit={async (entryData) => {
+        const response = await Axios.post<APIResponse>('http://localhost:3000/train/new', entryData)
+        return response.data;
+      }}
       className="add-train-form-container"
     >
       <form onSubmit={handleSubmit(onSubmit)}>

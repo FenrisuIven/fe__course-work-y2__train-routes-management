@@ -41,7 +41,7 @@ const DialogFormContainer = ({children, buttons, title, className, onSubmit}: Di
 
               if (status?.isInputValid) {
                 if (onSubmit) {
-                  const response: APIResponse = await onSubmit();
+                  const response: APIResponse = await onSubmit(status.values);
                   if (response.error) {
                     console.error('Error submitting form:', response);
                     return;

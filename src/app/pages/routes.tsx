@@ -5,7 +5,7 @@ import {observer} from "mobx-react-lite";
 import {fetchApiResponse} from "../../lib/fetchApiResponse.ts";
 import {useEffect, useState} from "react";
 import RootStoreCtx from "../../stores/rootStore/rootStoreCtx.ts";
-import {Divider} from "@mui/material";
+import {Divider, TableBody, TableCell, TableRow} from "@mui/material";
 
 const RoutesPage = observer(() => {
   const {
@@ -18,7 +18,9 @@ const RoutesPage = observer(() => {
 
   const {data: apiResponse, isRefetching, refetch} = useQuery({
     queryKey: ['data'],
-    queryFn: () => fetchApiResponse.get({url: 'http://localhost:3000/routes'}),
+    queryFn: () => {
+      return fetchApiResponse.get({url: 'http://localhost:3000/routes'})
+    },
     enabled: false,
   });
 
@@ -53,6 +55,28 @@ const RoutesPage = observer(() => {
         status={{
           isLoading: loading, isRefetching
         }}
+        columnDefs={[{
+          field: 'stops',
+          flex: 1,
+          renderCell: (params) => {
+            return (
+              <TableBody sx={{border: 0}}>
+                {params.row.stops.map((stop, idx) => {
+                  const borderBottom = idx === params.row.stops.length - 1 ? {borderBottom: 0} : {};
+                  return (
+                    <>
+                      <TableRow>
+                        <TableCell sx={borderBottom}> {stop.id} </TableCell>
+                        <TableCell sx={{...borderBottom, width: '150px'}}> {stop.name} </TableCell>
+                        <TableCell sx={borderBottom}> {stop.stationID} </TableCell>
+                      </TableRow>
+                    </>
+                  )
+                })}
+              </TableBody>
+            )
+          }
+        }]}
       />
       <Divider />
       <div style={{display: 'flex', gap: '0.5rem', padding: '0.5rem'}}>

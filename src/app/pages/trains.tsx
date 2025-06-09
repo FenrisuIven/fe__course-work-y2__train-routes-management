@@ -8,6 +8,7 @@ import {observer} from "mobx-react-lite";
 import {AddTrainForm} from "../../features/train/forms/AddTrainForm.tsx";
 import {Divider, Switch} from "@mui/material";
 import {TrainData} from "../../features/train/types/TrainData.ts";
+import {GridColDef} from "@mui/x-data-grid";
 
 const TrainsPage = observer(() => {
   const {searchValue, setDisplaySearchEnv, setSearchByOptions} = useNullableContext(RootStoreCtx).SearchDataStore;
@@ -46,12 +47,14 @@ const TrainsPage = observer(() => {
         status={{
           isLoading: loading, isRefetching
         }}
-        renderCells={[
+        columnDefs={[
           {
-            columnName: 'active',
-            component: (value: TrainData) => {
-              return <Switch defaultChecked={value.active} onChange={(e) => {
-                console.log(`Train ${value.id} active status changed to: ${e.target.checked}`);
+            field: 'active',
+            headerName: 'active',
+            width: 150,
+            renderCell: (value: GridColDef) => {
+              return <Switch defaultChecked={value.row.active} onChange={(e) => {
+                console.log(`Train ${value.row.id} active status changed to: ${e.target.checked}`);
               }} />
             }
           }

@@ -3,7 +3,7 @@ import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import {SearchBar} from '../search/SearchBar.tsx';
-import {Chip, Divider, Menu, MenuItem} from "@mui/material";
+import {Divider, Menu, MenuItem} from "@mui/material";
 import {useState, MouseEvent} from "react";
 import {NavLink} from "react-router";
 
@@ -36,11 +36,11 @@ const Header = () => {
         >
           <MenuItem><NavLink to="/trains">Trains</NavLink></MenuItem>
           <MenuItem><NavLink to="/stations">Stations</NavLink></MenuItem>
+          <MenuItem><NavLink to="/routes">Routes</NavLink></MenuItem>
+          <MenuItem><NavLink to="/voyages">Voyages</NavLink></MenuItem>
           <Divider />
           <MenuItem disabled><NavLink to="/#">Schedules</NavLink></MenuItem>
           <MenuItem disabled><NavLink to="/#">Train stops</NavLink></MenuItem>
-          <MenuItem disabled><NavLink to="/#">Voyages</NavLink></MenuItem>
-          <MenuItem disabled><NavLink to="/#">Routes</NavLink></MenuItem>
           <MenuItem disabled><NavLink to="/#">Trackers</NavLink></MenuItem>
         </Menu>
         <SearchBar />

@@ -1,10 +1,10 @@
-import {DisplayTable} from "../../shared/components/DisplayTable.tsx";
-import useNullableContext from "../../lib/hooks/useNullableContext.ts";
+import {DisplayTable} from "../../../shared/components/DisplayTable.tsx";
+import useNullableContext from "../../../lib/hooks/useNullableContext.ts";
 import {useQuery} from "@tanstack/react-query";
 import {observer} from "mobx-react-lite";
-import {fetchApiResponse} from "../../lib/fetchApiResponse.ts";
+import {fetchApiResponse} from "../../../lib/fetchApiResponse.ts";
 import {useEffect, useState} from "react";
-import RootStoreCtx from "../../stores/rootStore/rootStoreCtx.ts";
+import RootStoreCtx from "../../../stores/rootStore/rootStoreCtx.ts";
 import {Divider, TableBody, TableCell, TableRow} from "@mui/material";
 
 const RoutesPage = observer(() => {
@@ -60,7 +60,12 @@ const RoutesPage = observer(() => {
           flex: 1,
           renderCell: (params) => {
             return (
-              <TableBody sx={{border: 0}}>
+              <TableBody sx={{
+                border: 0,
+                '& .MuiTableCell-root': {
+                  fontFamily: '"Nunito", sans-serif',
+                }
+              }}>
                 {params.row.stops.map((stop, idx) => {
                   const borderBottom = idx === params.row.stops.length - 1 ? {borderBottom: 0} : {};
                   return (

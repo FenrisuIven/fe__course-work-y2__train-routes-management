@@ -1,13 +1,13 @@
-import {DisplayTable} from "../../shared/components/DisplayTable.tsx";
-import useNullableContext from "../../lib/hooks/useNullableContext.ts";
+import {DisplayTable} from "../../../shared/components/DisplayTable.tsx";
+import useNullableContext from "../../../lib/hooks/useNullableContext.ts";
 import {useEffect, useState} from "react";
-import {fetchApiResponse} from "../../lib/fetchApiResponse.ts";
+import {fetchApiResponse} from "../../../lib/fetchApiResponse.ts";
 import {useQuery} from "@tanstack/react-query";
-import RootStoreCtx from "../../stores/rootStore/rootStoreCtx.ts";
+import RootStoreCtx from "../../../stores/rootStore/rootStoreCtx.ts";
 import {observer} from "mobx-react-lite";
-import {AddTrainForm} from "../../features/train/forms/AddTrainForm.tsx";
+import {AddTrainForm} from "../../../features/train/forms/AddTrainForm.tsx";
 import {Divider, Switch} from "@mui/material";
-import {TrainData} from "../../features/train/types/TrainData.ts";
+import {TrainData} from "../../../features/train/types/TrainData.ts";
 import {GridColDef} from "@mui/x-data-grid";
 
 const TrainsPage = observer(() => {

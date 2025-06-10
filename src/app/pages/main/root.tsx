@@ -1,5 +1,5 @@
 import {Outlet} from "react-router";
-import {Header} from "../../features/header/Header.tsx";
+import {Header} from "../../../features/header/Header.tsx";
 
 import './styles/root.css'
 

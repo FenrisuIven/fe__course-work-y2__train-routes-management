@@ -14,7 +14,7 @@ const SearchParameter = ({options, sx}: { options: string[], sx: SxProps }) => {
         label="Search by"
         sx={{
           width: "12ch",
-          paddingX: "0.6rem"
+          paddingX: "0.6rem",
         }}
         onChange={(e) => {
           setSearchBy(e.target.value)

@@ -19,33 +19,35 @@ const SearchBar = observer(() => {
   };
 
   return (
-    <TextField
-      fullWidth
-      variant="standard"
-      onBlur={handleClose}
-      color="secondary"
-      label={`Search in ${displaySearchEnv}`}
-      slotProps={{
-        input: {
-          startAdornment: (
-            <>
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            </>
-          ),
-          endAdornment: (
-            <>
-              <InputAdornment position="end">
-                <SearchParameter options={searchByOptions} sx={{
-                  marginTop: "-14px"
-                }} />
-              </InputAdornment>
-            </>
-          )
-        },
-      }}
-    />
+    <>
+      <TextField
+        fullWidth
+        variant="standard"
+        onBlur={handleClose}
+        color="secondary"
+        label={`Search in ${displaySearchEnv}`}
+        slotProps={{
+          input: {
+            startAdornment: (
+              <>
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              </>
+            ),
+            endAdornment: (
+              <>
+                <InputAdornment position="end">
+                  <SearchParameter options={searchByOptions} sx={{
+                    marginTop: "-14px"
+                  }} />
+                </InputAdornment>
+              </>
+            )
+          },
+        }}
+      />
+    </>
   );
 })
 

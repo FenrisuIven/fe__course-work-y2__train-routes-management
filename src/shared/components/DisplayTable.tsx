@@ -1,13 +1,14 @@
 import {DataGrid, GridColDef, GridRenderCellParams, GridRowsProp} from '@mui/x-data-grid';
 import {Chip, LinearProgress, SxProps} from "@mui/material";
 
-const DisplayTable = ({rows, sx, status, columnDefs}: {
+const DisplayTable = ({rows, sx, status, columnDefs, getRowId}: {
   rows: GridRowsProp,
   sx?: SxProps,
   status: {
     isLoading: boolean,
     isRefetching: boolean,
   },
+  getRowId?: (row) => string | number,
   columnDefs?: GridColDef[],
 }) => {
   const columnNames = Object.keys(rows?.[0] || {})
@@ -48,6 +49,7 @@ const DisplayTable = ({rows, sx, status, columnDefs}: {
         rows={rows}
         columns={columnNames}
         getRowHeight={() => 'auto'}
+        getRowId={getRowId}
         sx={{
           ...sx,
           border: 0,

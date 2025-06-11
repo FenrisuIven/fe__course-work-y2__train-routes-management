@@ -5,8 +5,9 @@ import {observer} from "mobx-react-lite";
 import {fetchApiResponse} from "../../../lib/fetchApiResponse.ts";
 import {useEffect, useState} from "react";
 import RootStoreCtx from "../../../stores/rootStore/rootStoreCtx.ts";
-import {TempViewStationPos} from "../../../features/station/forms/TempViewStationPos.tsx";
+import {TempViewStationPos} from "../../../features/station/forms/TestViewStationPos/TempViewStationPos.tsx";
 import {Divider} from "@mui/material";
+import {AddStationForm} from "../../../features/station/forms/AddStation/AddStationForm.tsx";
 
 const StationPage = observer(() => {
   const {
@@ -59,6 +60,7 @@ const StationPage = observer(() => {
       <Divider />
       <div style={{display: 'flex', gap: '0.5rem', padding: '0.5rem'}}>
         <TempViewStationPos />
+        <AddStationForm />
       </div>
     </div>
   </>

@@ -1,11 +1,11 @@
-import {DialogFormContainer} from "../../form/DialogFormContainer.tsx";
+import {DialogFormContainer} from "../../../form/DialogFormContainer.tsx";
 import './testMapBox.css'
 
 import Map, {Source, Layer} from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import {useQuery} from "@tanstack/react-query";
 import Axios from "axios";
-import {APIResponse} from "../../types/APIResponse.ts";
+import {APIResponse} from "../../../types/APIResponse.ts";
 import {useEffect} from "react";
 import {GeoJSON} from 'geojson';
 

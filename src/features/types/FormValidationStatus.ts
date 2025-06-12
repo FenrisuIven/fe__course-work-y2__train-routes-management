@@ -1,4 +1,4 @@
-export type FormValidationStatus = {
+export type FormValidationStatus<T extends Record<string, any>> = {
   isInputValid: boolean;
-  values: Record<string, string | number>;
+  values: T;
 }

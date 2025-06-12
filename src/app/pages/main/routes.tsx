@@ -6,6 +6,7 @@ import {fetchApiResponse} from "../../../lib/fetchApiResponse.ts";
 import {useEffect, useState} from "react";
 import RootStoreCtx from "../../../stores/rootStore/rootStoreCtx.ts";
 import {Divider, TableBody, TableCell, TableRow} from "@mui/material";
+import {NewRouteForm} from "../../../features/routes/forms/NewRouteForm/NewRouteForm.tsx";
 
 const RoutesPage = observer(() => {
   const {
@@ -85,6 +86,7 @@ const RoutesPage = observer(() => {
       />
       <Divider />
       <div style={{display: 'flex', gap: '0.5rem', padding: '0.5rem'}}>
+        <NewRouteForm />
       </div>
     </div>
   </>

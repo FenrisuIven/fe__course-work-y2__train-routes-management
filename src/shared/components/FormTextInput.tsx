@@ -3,15 +3,16 @@ import {UseFormRegisterReturn, GlobalError} from "react-hook-form";
 
 import InputMask from "@mona-health/react-input-mask";
 
-const FormTextInput = ({label, errorField, register, inputMask}: {
+const FormTextInput = ({label, errorField, register, inputMask, value}: {
   label?: string,
   errorField?: GlobalError,
   register?: UseFormRegisterReturn,
-  inputMask?: string
+  inputMask?: string,
+  value?: string | number
 }) => {
   return <>
     <div style={{display: 'flex', flexDirection: 'column', gap: '0.2rem'}}>
-      <InputMask mask={inputMask} {...register} >
+      <InputMask mask={inputMask} {...register} value={value}>
         <TextField label={label} color={errorField ? 'error' : 'primary'} focused={Boolean(errorField)} />
       </InputMask>
       {errorField && <Typography color="error" variant="subtitle2">{errorField.message}</Typography>}

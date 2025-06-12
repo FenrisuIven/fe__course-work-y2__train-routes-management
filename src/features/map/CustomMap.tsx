@@ -1,13 +1,15 @@
 import Map from "react-map-gl";
 import {CSSProperties, PropsWithChildren} from "react";
+import {MapLayerMouseEvent} from "mapbox-gl";
 
-const CustomMap = ({children, style, initialViewState}: {
+const CustomMap = ({children, style, initialViewState, onClick}: {
   style?: CSSProperties,
   initialViewState?: {
     longitude: number,
     latitude: number,
     zoom: number
-  }
+  },
+  onClick?: (e: MapLayerMouseEvent) => void
 } & PropsWithChildren) => {
   return <>
     <Map
@@ -15,6 +17,7 @@ const CustomMap = ({children, style, initialViewState}: {
       initialViewState={initialViewState}
       style={style}
       mapStyle="mapbox://styles/mapbox/streets-v11"
+      onClick={onClick}
     >
       {children}
     </Map>

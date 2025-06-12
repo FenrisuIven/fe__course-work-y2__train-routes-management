@@ -13,6 +13,8 @@ import CustomMap from "../../../map/CustomMap.tsx";
 
 import './AddStationForm.css'
 import {point} from "@turf/turf";
+import Checkbox from '@mui/material/Checkbox';
+import {Box, Divider} from "@mui/material";
 
 const getRequiredLengthParams = (label: string, length: number) => ({
   required: true,
@@ -21,6 +23,14 @@ const getRequiredLengthParams = (label: string, length: number) => ({
     message: `${label} must be at least 6 characters long`
   },
 });
+
+const latLonParams = {
+  required: true,
+  pattern: {
+    value: /^-?\d+(\.\d+)?$/,
+    message: 'Must be a valid number'
+  }
+};
 
 const AddStationForm = () => {
   const {register, handleSubmit, formState: {errors}, getValues, subscribe, setValue} = useForm<NewStationInputs>({
@@ -32,6 +42,8 @@ const AddStationForm = () => {
   const [rawLat, setRawLat] = useState<number>(0);
   const [rawLon, setRawLon] = useState<number>(0);
   const [stationPosition, setStationPosition] = useState<GeoJSON>({type: 'FeatureCollection', features: []});
+
+  const [customNameSection, setCustomNameSection] = useState<boolean>(false);
 
   const updateStationPosition = (values: NewStationInputs) => {
     const newLon = Number(values.lon);
@@ -77,7 +89,7 @@ const AddStationForm = () => {
         },
       }}
       onSubmit={async (entryData) => {
-        const response = await Axios.post<APIResponse>('http://localhost:3000/', entryData)
+        const response = await Axios.post<APIResponse>('http://localhost:3000/station/new', entryData)
         return response.data;
       }}
     >
@@ -107,27 +119,35 @@ const AddStationForm = () => {
             <FormTextInput
               label="Lon"
               errorField={errors.lon}
-              register={register("lon", {
-                required: true,
-                pattern: {
-                  value: /^-?\d+(\.\d+)?$/,
-                  message: 'Must be a valid number'
-                }
-              })}
+              register={register("lon", latLonParams)}
               value={rawLon}
             />
             <FormTextInput
               label="Lat"
               errorField={errors.lat}
-              register={register("lat", {
-                required: true,
-                pattern: {
-                  value: /^-?\d+(\.\d+)?$/,
-                  message: 'Must be a valid number'
-                }
-              })}
+              register={register("lat", latLonParams)}
               value={rawLat}
             />
+          </div>
+          <div>
+            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-evenly'}}>
+              <span style={{fontSize: '0.8rem'}}>Stop name is different</span>
+              <Checkbox size='small' onChange={() => {
+                setCustomNameSection(!customNameSection);
+              }} />
+            </div>
+            <Box hidden={!customNameSection} sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '1rem',
+            }}>
+              <Divider />
+              <FormTextInput
+                label="Stop name"
+                errorField={errors.stopName}
+                register={register("stopName")}
+              />
+            </Box>
           </div>
         </div>
         <div>
@@ -137,11 +157,8 @@ const AddStationForm = () => {
               latitude: 49.441325,
               zoom: 9
             }}
-            style={{
-              minWidth: '20rem',
-            }}
+            style={{minWidth: '20rem'}}
             onClick={(e) => {
-              console.log(e.lngLat);
               const newLat = Number(e.lngLat.lat.toFixed(6));
               const newLon = Number(e.lngLat.lng.toFixed(6));
               setValue('lat', newLat);

@@ -4,5 +4,6 @@ export type NewStationInputs = {
   region: string,
   street: string,
   lat: number,
-  lon: number
+  lon: number,
+  stopName: string,
 };

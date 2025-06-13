@@ -1,4 +1,4 @@
-import {DialogFormContainer} from "../../../form/DialogFormContainer.tsx";
+import {DialogFormContainer} from "../../../../shared/components/form/DialogFormContainer.tsx";
 import {Controller, SubmitHandler, useFieldArray, useForm} from "react-hook-form";
 import {NewRouteInputs} from "../../schemas/NewRouteInputs.ts";
 import Axios from "axios";
@@ -12,7 +12,7 @@ import CustomMap from "../../../map/CustomMap.tsx";
 import {useQuery} from "@tanstack/react-query";
 import {Button, Divider, MenuItem, Select, SelectChangeEvent, Typography} from "@mui/material";
 import {Source, Layer} from "react-map-gl";
-import {FormTextInput} from "../../../../shared/components/FormTextInput.tsx";
+import {FormTextInput} from "../../../../shared/components/form/FormTextInput.tsx";
 import AddIcon from '@mui/icons-material/Add';
 import {TrainStopWithStation} from "../../../trainStop/types/TrainStopWithStation.ts";
 

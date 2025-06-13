@@ -1,11 +1,11 @@
-import {DialogFormContainer} from "../../form/DialogFormContainer.tsx";
+import {DialogFormContainer} from "../../../shared/components/form/DialogFormContainer.tsx";
 import {SubmitHandler, useForm} from "react-hook-form";
 import {NewTrainInputs} from "../schemas/NewTrainInputs.ts";
 import {useQuery} from "@tanstack/react-query";
 import Axios from "axios";
 import {useEffect} from "react";
-import {FormSelect} from "../../../shared/components/FormSelect.tsx";
-import {FormTextInput} from "../../../shared/components/FormTextInput.tsx";
+import {FormSelect} from "../../../shared/components/form/FormSelect.tsx";
+import {FormTextInput} from "../../../shared/components/form/FormTextInput.tsx";
 import {FormValidationStatus} from "../../types/FormValidationStatus.ts";
 
 import './AddTrainForm.css'

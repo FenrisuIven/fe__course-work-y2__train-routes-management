@@ -1,4 +1,4 @@
-import {DialogFormContainer} from "../../../form/DialogFormContainer.tsx";
+import {DialogFormContainer} from "../../../../shared/components/form/DialogFormContainer.tsx";
 import './testMapBox.css'
 
 import Map, {Source, Layer} from 'react-map-gl';

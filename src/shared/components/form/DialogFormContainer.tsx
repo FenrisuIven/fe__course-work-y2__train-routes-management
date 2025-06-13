@@ -1,7 +1,7 @@
 import {Button, Dialog, DialogActions, DialogTitle, DialogContent} from "@mui/material";
 import {PropsWithChildren, useState} from "react";
-import {DialogFormParams} from "../types";
-import {APIResponse} from "../types/APIResponse.ts";
+import {DialogFormParams} from "../../../features/types";
+import {APIResponse} from "../../../features/types/APIResponse.ts";
 
 const DialogFormContainer = ({children, buttons, title, className, onSubmit}: DialogFormParams & PropsWithChildren) => {
   const [open, setOpen] = useState(false);

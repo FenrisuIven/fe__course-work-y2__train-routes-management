@@ -1,8 +1,8 @@
-import {DialogFormContainer} from "../../../form/DialogFormContainer.tsx";
+import {DialogFormContainer} from "../../../../shared/components/form/DialogFormContainer.tsx";
 import {SubmitHandler, useForm} from "react-hook-form";
 import {NewStationInputs} from "../../schemas/NewStationInputs.ts";
 import Axios from "axios";
-import {FormTextInput} from "../../../../shared/components/FormTextInput.tsx";
+import {FormTextInput} from "../../../../shared/components/form/FormTextInput.tsx";
 import {FormValidationStatus} from "../../../types/FormValidationStatus.ts";
 import {Layer, Source} from "react-map-gl";
 

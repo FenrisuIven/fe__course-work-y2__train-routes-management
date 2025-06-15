@@ -50,6 +50,14 @@ const DisplayTable = ({rows, sx, status, columnDefs, getRowId}: {
         columns={columnNames}
         getRowHeight={() => 'auto'}
         getRowId={getRowId}
+        initialState={{
+          pagination: {
+            paginationModel: {
+              pageSize: 5,
+            }
+          }
+        }}
+        pageSizeOptions={[5, 10, 15, 20]}
         sx={{
           ...sx,
           border: 0,

@@ -1,4 +1,4 @@
-export type TrainStopWithStation = {
+export type TrainStopData = {
   id: number,
   name: string,
   stationID: number,
@@ -8,3 +8,9 @@ export type TrainStopWithStation = {
   stationStreet: string,
   stopPosition: number[]
 };
+
+export type TrainStop = {
+  id: number,
+  name: string,
+  stationID: number,
+}

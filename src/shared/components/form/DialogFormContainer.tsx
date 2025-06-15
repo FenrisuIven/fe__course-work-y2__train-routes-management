@@ -1,9 +1,11 @@
 import {Button, Dialog, DialogActions, DialogTitle, DialogContent} from "@mui/material";
-import {PropsWithChildren, useState} from "react";
+import {PropsWithChildren, useImperativeHandle, useState} from "react";
 import {DialogFormParams} from "../../../features/types";
-import {APIResponse} from "../../../features/types/APIResponse.ts";
 
-const DialogFormContainer = ({children, buttons, title, className, onSubmit}: DialogFormParams & PropsWithChildren) => {
+const DialogFormContainer = ({
+                               children, buttons, title, className, onSubmit, dialogRef
+                             }: DialogFormParams & PropsWithChildren
+) => {
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
@@ -13,6 +15,8 @@ const DialogFormContainer = ({children, buttons, title, className, onSubmit}: Di
   const handleClose = () => {
     setOpen(false);
   };
+
+  useImperativeHandle(dialogRef, () => ({close: handleClose}));
 
   return <>
     <Button variant="outlined" onClick={handleClickOpen}>
@@ -36,18 +40,14 @@ const DialogFormContainer = ({children, buttons, title, className, onSubmit}: Di
           <Button
             autoFocus
             type={buttons?.confirm?.type || 'button'}
-            onClick={async () => {
-              const status = await buttons?.confirm?.handler();
-
-              if (status?.isInputValid) {
-                if (onSubmit) {
-                  const response: APIResponse = await onSubmit(status.values);
-                  if (response.error) {
-                    console.error('Error submitting form:', response);
-                    return;
-                  }
+            onClick={() => {
+              buttons?.confirm?.handler();
+              if (onSubmit) {
+                const res = onSubmit();
+                console.log({res})
+                if (res.isInputValid) {
+                  handleClose();
                 }
-                handleClose();
               }
             }}>
             {buttons?.confirm?.label || 'Confirm'}

@@ -1,23 +1,23 @@
-import {DialogFormContainer} from "../../../shared/components/form/DialogFormContainer.tsx";
 import {SubmitHandler, useForm} from "react-hook-form";
 import {NewTrainInputs} from "../schemas/NewTrainInputs.ts";
 import {useQuery} from "@tanstack/react-query";
-import Axios from "axios";
-import {useEffect} from "react";
+import Axios, {AxiosError} from "axios";
 import {FormSelect} from "../../../shared/components/form/FormSelect.tsx";
 import {FormTextInput} from "../../../shared/components/form/FormTextInput.tsx";
-import {FormValidationStatus} from "../../types/FormValidationStatus.ts";
-
-import './AddTrainForm.css'
-import {VoyageData} from "../../voyage/types/VoyageData.ts";
 import {APIResponse} from "../../types/APIResponse.ts";
+import {useRef} from "react";
+import {DialogFormRef} from "../../types/DialogFormRef.ts";
+import {VoyageData} from "../../voyage/types/VoyageData.ts";
+import Form from "../../../shared/components/form/Form.tsx";
 
 const AddTrainForm = () => {
-  const {register, handleSubmit, formState: {errors}, getValues} = useForm<NewTrainInputs>({
+  const form = useForm<NewTrainInputs>({
     mode: "onSubmit",
     reValidateMode: "onSubmit"
   });
-  const onSubmit: SubmitHandler<NewTrainInputs> = (data) => console.log({data});
+  const {register, formState: {errors}, reset} = form;
+
+  const dialogRef = useRef<DialogFormRef>(null);
 
   const {data: voyages} = useQuery({
     queryKey: ['addTrain_voyageIDs'],
@@ -27,70 +27,97 @@ const AddTrainForm = () => {
     }
   });
 
-  useEffect(() => {
-    console.log(voyages);
-  }, [voyages]);
+  const onSubmit =
+    (updateSnackbar?: (status: {
+      error: boolean,
+      message: string
+    }) => void): SubmitHandler<NewTrainInputs> => {
+      return async (entryData): Promise<void> => {
+        try {
+          const response = await Axios.post<APIResponse>('http://localhost:3000/train/new', {
+            ...entryData,
+            active: false
+          });
+          const isSuccess = !response.data.data.error;
 
-  return <>
-    <DialogFormContainer
-      title="Add new train"
-      buttons={{
-        confirm: {
-          label: 'Add',
-          type: 'submit',
-          handler: async (): Promise<FormValidationStatus> => {
-            const submitHandler = handleSubmit(onSubmit);
-            await submitHandler();
-
-            const isInputValid = Object.keys(errors).length === 0;
-            const values = getValues();
-
-            return {isInputValid, values};
+          if (updateSnackbar) {
+            updateSnackbar({
+              error: !isSuccess,
+              message: !isSuccess ? response.data.data.message || 'Unspecified error occured' : 'New train created'
+            });
           }
-        },
-      }}
-      onSubmit={async (entryData) => {
-        const response = await Axios.post<APIResponse>('http://localhost:3000/train/new', entryData)
-        return response.data;
-      }}
-      className="add-train-form-container"
-    >
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div style={{display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '0.5rem'}}>
-          <FormTextInput
-            label={"Train Name"}
-            errorField={errors.name}
-            register={register("name", {
-              required: true,
-              minLength: {
-                value: 4,
-                message: 'Train name must be at least 4 characters long'
-              },
-            })}
-          />
-          <FormTextInput
-            label="Serial of new tracker"
-            inputMask="****-****-****-****"
-            errorField={errors.trackerSerial}
-            register={register("trackerSerial", {
-              required: true,
-              minLength: {
-                value: 19,
-                message: 'Tracker serial must be at least 15 characters long'
-              }
-            })}
-          />
-          <FormSelect
-            options={voyages}
-            label="Voyage"
-            id="voyage-id"
-            optionsKeyBase="addTrain_voyageId"
-            registerProps={register('voyageID')}
-          />
-        </div>
-      </form>
-    </DialogFormContainer>
-  </>
-}
+
+          reset();
+          dialogRef.current?.close();
+
+          return;
+        } catch (e) {
+
+          if (e instanceof AxiosError) {
+            if (updateSnackbar) {
+              updateSnackbar({
+                error: true,
+                message: e.response?.data?.data?.message || 'Failed to create new train'
+              });
+            }
+            return;
+          }
+
+          if (updateSnackbar) {
+            updateSnackbar({
+              error: true,
+              message: 'Unknown error occurred'
+            });
+          }
+        }
+        return;
+      }
+    };
+
+  return (
+    <>
+      <Form<NewTrainInputs>
+        onSubmit={onSubmit}
+        form={form}
+        submitButton={{
+          label: "Save",
+          type: "submit"
+        }}
+        ref={dialogRef}
+      >
+        <FormTextInput
+          label={"Train Name"}
+          errorField={errors.name}
+          register={register("name", {
+            required: true,
+            minLength: {
+              value: 4,
+              message: 'Train name must be at least 4 characters long'
+            },
+          })}
+        />
+        <FormTextInput
+          label="Serial of new tracker"
+          inputMask="****-****-****-****"
+          errorField={errors.trackerSerial}
+          register={register("trackerSerial", {
+            required: true,
+            minLength: {
+              value: 19,
+              message: 'Tracker serial must be at least 15 characters long'
+            }
+          })}
+        />
+        <FormSelect
+          options={voyages}
+          label="Voyage"
+          id="voyage-id"
+          optionsKeyBase="addTrain_voyageId"
+          registerProps={register('voyageID')}
+        />
+      </Form>
+    </>
+  );
+};
 
 export {AddTrainForm}

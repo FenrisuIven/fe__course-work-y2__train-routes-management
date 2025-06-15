@@ -1,19 +1,24 @@
 import {FormControl, InputLabel, MenuItem, Select, Typography} from "@mui/material";
+import {ControllerRenderProps} from "react-hook-form";
 
-const FormSelect = ({options, optionsKeyBase, id, label, registerProps}: {
+const FormSelect = ({options, optionsKeyBase, id, label, registerProps, multiple, controllerField}: {
   options?: { id: number, name: string }[],
   optionsKeyBase: string,
   id: string,
   label: string,
-  registerProps?: object
+  multiple?: boolean,
+  registerProps?: object,
+  controllerField?: ControllerRenderProps<any>
 }) => {
+  const props = multiple ? controllerField : registerProps;
   return <>
     <FormControl>
       <InputLabel id={`${id}-input-label`}>{label}</InputLabel>
       <Select
         label={label}
         labelId={`${id}-input-label`}
-        {...registerProps}
+        {...props}
+        multiple={multiple}
       >
         <MenuItem><Typography color="textDisabled">None</Typography></MenuItem>
         {options?.map((entry: { id: number, name: string }) => {

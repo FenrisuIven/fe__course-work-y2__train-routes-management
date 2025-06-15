@@ -1,0 +1,1 @@
+export type DialogFormRef = Record<string, any> & { close: () => void } | null;

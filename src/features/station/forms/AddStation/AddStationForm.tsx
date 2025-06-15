@@ -11,7 +11,6 @@ import {useState} from "react";
 import {GeoJSON} from "geojson";
 import CustomMap from "../../../map/CustomMap.tsx";
 
-import './AddStationForm.css'
 import {point} from "@turf/turf";
 import Checkbox from '@mui/material/Checkbox';
 import {Box, Divider} from "@mui/material";
@@ -77,7 +76,7 @@ const AddStationForm = () => {
         confirm: {
           label: 'Add',
           type: 'submit',
-          handler: async (): Promise<FormValidationStatus> => {
+          handler: async (): Promise<FormValidationStatus<NewStationInputs>> => {
             const submitHandler = handleSubmit(onSubmit);
             await submitHandler();
 

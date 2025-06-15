@@ -14,10 +14,10 @@ import {Button, Divider, MenuItem, Select, SelectChangeEvent, Typography} from "
 import {Source, Layer} from "react-map-gl";
 import {FormTextInput} from "../../../../shared/components/form/FormTextInput.tsx";
 import AddIcon from '@mui/icons-material/Add';
-import {TrainStopWithStation} from "../../../trainStop/types/TrainStopWithStation.ts";
+import {TrainStopData} from "../../../trainStop/types/TrainStopData.ts";
 
 const SelectTrainStop = ({stops, onChange, value, selectedIDs}: {
-  stops: { rows: TrainStopWithStation[] },
+  stops: { rows: TrainStopData[] },
   onChange: (e: SelectChangeEvent) => void,
   value?: number,
   selectedIDs?: number[]
@@ -55,7 +55,7 @@ const NewRouteForm = () => {
     queryKey: ['newStation_Stops'],
     queryFn: async () => {
       const response = await Axios.get<APIResponse>('http://localhost:3000/trainStop?include=station');
-      return response.data.data as { rows: TrainStopWithStation[], count: number } || [];
+      return response.data.data as { rows: TrainStopData[], count: number } || [];
     },
     enabled: false
   });
@@ -119,7 +119,7 @@ const NewRouteForm = () => {
         confirm: {
           label: 'Create',
           type: 'submit',
-          handler: async (): Promise<FormValidationStatus<NewRouteInputs>> => {
+          handler: async (): Promise<FormValidationStatus> => {
             const submitHandler = handleSubmit(onSubmit);
             await submitHandler();
 
@@ -131,7 +131,7 @@ const NewRouteForm = () => {
         },
       }}
       onSubmit={async (entryData) => {
-        const response = await Axios.post<APIResponse>('http://localhost:3000/', entryData)
+        const response = await Axios.post<APIResponse>('http://localhost:3000/routes/new', entryData)
         return response.data;
       }}
     >

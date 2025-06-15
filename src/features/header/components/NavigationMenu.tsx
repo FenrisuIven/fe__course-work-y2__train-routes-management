@@ -31,11 +31,11 @@ const NavigationMenu = () => {
     >
       <MenuItem><NavLink to="/trains">Trains</NavLink></MenuItem>
       <MenuItem><NavLink to="/stations">Stations</NavLink></MenuItem>
+      <MenuItem><NavLink to="/train-stops">Train stops</NavLink></MenuItem>
       <MenuItem><NavLink to="/routes">Routes</NavLink></MenuItem>
       <MenuItem><NavLink to="/voyages">Voyages</NavLink></MenuItem>
+      <MenuItem><NavLink to="/schedule">Schedule</NavLink></MenuItem>
       <Divider />
-      <MenuItem disabled><NavLink to="/#">Schedules</NavLink></MenuItem>
-      <MenuItem disabled><NavLink to="/#">Train stops</NavLink></MenuItem>
       <MenuItem disabled><NavLink to="/#">Trackers</NavLink></MenuItem>
     </Menu>
   </>

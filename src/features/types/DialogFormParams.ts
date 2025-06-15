@@ -1,19 +1,20 @@
-import {FormValidationStatus} from "./FormValidationStatus.ts";
-import {APIResponse} from "./APIResponse.ts";
+import {RefObject} from "react";
 
 export type DialogFormParams = {
   title: string;
   buttons?: {
     cancel?: {
       label: string;
-      handler: () => FormValidationStatus | void;
+      handler: () => Promise<void>;
     },
     confirm?: {
       label: string;
       type?: 'submit' | 'button';
-      handler: () => Promise<FormValidationStatus>;
+      handler: () => Promise<void>;
     }
   };
   className?: string;
-  onSubmit?: (data: Record<string, any>) => Promise<APIResponse>;
+  onSubmit?: (props?: any) => any;
+  dialogRef: RefObject<Record<string, any> & { close: () => void } | null>
 }
+

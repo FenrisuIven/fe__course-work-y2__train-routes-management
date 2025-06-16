@@ -1,4 +1,4 @@
 export type NewRouteInputs = {
   name: string,
-  stops: number[]
+  stops: { id: number }[]
 };

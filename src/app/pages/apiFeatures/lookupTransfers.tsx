@@ -1,43 +1,48 @@
 import {useQuery} from "@tanstack/react-query";
-import {Autocomplete, Button, MenuItem, TableBody, TableCell, TableRow, TextField} from "@mui/material";
+import {Button, TableBody, TableCell, TableHead, TableRow} from "@mui/material";
 import Axios from "axios";
 import {useEffect, useState} from "react";
-import CustomMap from "../../../features/map/CustomMap.tsx";
-import {NavLink} from "react-router";
 import {DisplayTable} from "../../../shared/components/DisplayTable.tsx";
+import {SelectStop} from "../../../features/lookupTransfers/components/SelectStop.tsx";
+import {GridRenderCellParams} from "@mui/x-data-grid";
 
-const textFieldsSlotProps = {
-  inputLabel: {shrink: true}
+const getParamsHeaderNames = (row) => {
+  console.log({row})
+  return Object.entries(row[0] || {})
+    .filter((pair) => typeof pair[1] !== 'object')
+    .map(pair => pair[0])
 }
 
-const SelectStop = ({stops, label, selectedOption, setNewTarget}: {
-  stops: Record<string, any>[],
-  label: string,
-  selectedOption: Record<string, any> | undefined;
-  setNewTarget: (value) => void
+const TrainStopHeader = ({params}: { params: GridRenderCellParams }) => {
+  return <>
+    <TableHead>
+      <TableRow>
+        {getParamsHeaderNames(params).map(name => {
+          return <TableCell>{name}</TableCell>
+        })}
+      </TableRow>
+    </TableHead>
+  </>
+}
+
+const TrainStopRow = ({borderBottom, stop}: {
+  borderBottom: Record<string, any>,
+  stop: { id: number, name: string, station: { name: string, region: string } }
 }) => {
-  return (
-    <Autocomplete
-      disablePortal
-      options={stops}
-      onChange={(e, val) => {
-        setNewTarget(val);
-      }}
-      renderInput={(p) =>
-        <TextField {...p} slotProps={textFieldsSlotProps} label={label} />
-      }
-      renderOption={(props, option) => {
-        const {key, ...optionsProps} = props;
-        return <MenuItem key={key} {...optionsProps}>{option.id}: {option.name} ({option.stationName})</MenuItem>;
-      }}
-      getOptionLabel={(option) => {
-        return `${option.id}: ${option.name} (${option.stationName})`
-      }}
-      getOptionDisabled={(option) => {
-        return option.id === selectedOption?.id;
-      }}
-    />
-  )
+  return <>
+    <TableRow>
+      <TableCell sx={{...borderBottom, width: '5%'}}> {stop.id} </TableCell>
+      <TableCell sx={{
+        ...borderBottom,
+        borderLeft: 1
+      }}> {stop.name} </TableCell>
+      <TableCell sx={{
+        ...borderBottom,
+        borderLeft: 1,
+        width: '45%'
+      }}> {stop.station.name}, {stop.station.region} </TableCell>
+    </TableRow>
+  </>
 }
 
 const LookupTransfers = () => {
@@ -95,16 +100,8 @@ const LookupTransfers = () => {
           <Button onClick={() => refetch()}>Search</Button>
           <Button>Cancel</Button>
         </div>
-        <div style={{flex: 1}}>
-          <CustomMap points={stops?.rows.map(stop => {
-            return {
-              label: `${stop.id}: ${stop.name} (${stop.stationName})`,
-              position: stop.stopPosition,
-            }
-          }) || []} />
-        </div>
       </div>
-      <div style={{flex: 3}}>
+      <div style={{flex: 4}}>
         <DisplayTable
           rows={transfers?.rows || []}
           status={{isLoading, isRefetching}}
@@ -113,49 +110,68 @@ const LookupTransfers = () => {
           columnDefs={[{
             field: "routeStart",
             headerName: 'First route',
-            flex: 2,
+            flex: 1,
             renderCell: (params) => {
-              console.log(params.row.routeStart)
               return (
-                <TableBody sx={{
-                  border: 0,
-                  '& .MuiTableCell-root': {
-                    fontFamily: '"Nunito", sans-serif',
-                  }
-                }}>
-                  {params.row.routeStart.stops.map((stop, idx) => {
-                    console.log({stop})
-                    const borderBottom = idx === params.row.routeStart.stops.length - 1 ? {borderBottom: 0} : {};
-                    return (
-                      <>
-                        <TableRow>
-                          <TableCell sx={{...borderBottom, width: '5%'}}> {stop.id} </TableCell>
-                          <TableCell sx={{...borderBottom}}> {stop.name} </TableCell>
-                          <TableCell sx={{
-                            ...borderBottom,
-                            borderLeft: 1,
-                            width: '45%'
-                          }}> {stop.station.name}, {stop.station.region} </TableCell>
-                        </TableRow>
-                      </>
-                    )
-                  })}
-                </TableBody>
+                <>
+                  <TrainStopHeader params={params.row.routeStart.stops} />
+                  <TableBody sx={{
+                    border: 0,
+                    '& .MuiTableCell-root': {
+                      fontFamily: '"Nunito", sans-serif',
+                    }
+                  }}>
+                    {params.row.routeStart.stops.map((stop, idx) => {
+                      const borderBottom = idx === params.row.routeStart.stops.length - 1 ? {borderBottom: 0} : {};
+                      return <TrainStopRow borderBottom={borderBottom} stop={stop} />
+                    })}
+                  </TableBody>
+                </>
               )
             }
           }, {
             field: 'routeEnd',
             headerName: 'Second route',
-            flex: 2,
-            renderCell: () => {
-              return <span>2</span>
+            flex: 1,
+            renderCell: (params) => {
+              return (
+                <>
+                  <TrainStopHeader params={params.row.routeEnd.stops} />
+                  <TableBody sx={{
+                    border: 0,
+                    '& .MuiTableCell-root': {
+                      fontFamily: '"Nunito", sans-serif',
+                    }
+                  }}>
+                    {params.row.routeEnd.stops.map((stop, idx) => {
+                      const borderBottom = idx === params.row.routeEnd.stops.length - 1 ? {borderBottom: 0} : {};
+                      return <TrainStopRow borderBottom={borderBottom} stop={stop} />
+                    })}
+                  </TableBody>
+                </>
+              )
             }
           }, {
             field: 'transferStops',
             headerName: 'Transfer stops',
             flex: 1,
-            renderCell: () => {
-              return <span>2</span>
+            renderCell: (params) => {
+              return (
+                <>
+                  <TrainStopHeader params={params.row.transferStops} />
+                  <TableBody sx={{
+                    border: 0,
+                    '& .MuiTableCell-root': {
+                      fontFamily: '"Nunito", sans-serif',
+                    }
+                  }}>
+                    {params.row.transferStops.map((stop, idx) => {
+                      const borderBottom = idx === params.row.transferStops.length - 1 ? {borderBottom: 0} : {};
+                      return <TrainStopRow borderBottom={borderBottom} stop={stop} />
+                    })}
+                  </TableBody>
+                </>
+              )
             }
           }]}
         />

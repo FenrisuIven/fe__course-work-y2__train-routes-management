@@ -45,7 +45,7 @@ const TempViewStationPos = () => {
 
   return <>
     {!isLoading &&
-      <DialogFormContainer title='Test map view' className='test-map-box'>
+      <DialogFormContainer title='See all stations' className='test-map-box'>
         <Map
           mapboxAccessToken="pk.eyJ1IjoiZmVucmlzdWx2ZW4iLCJhIjoiY21iN3o3ZHExMDc4MTJrc2JiOGFmaDA1MiJ9.eSPe52_A7Sxt5-xK6DW5CQ"
           initialViewState={{

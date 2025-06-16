@@ -83,6 +83,7 @@ const NewVoyageForm = () => {
   return (
     <>
       <Form<NewVoyageInputs>
+        label='Add new voyage'
         onSubmit={onSubmit}
         form={form}
         submitButton={{

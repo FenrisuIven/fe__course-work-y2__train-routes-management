@@ -15,7 +15,7 @@ const FormTextInput = ({label, errorField, register, inputMask, value}: {
       <InputMask mask={inputMask} {...register} value={value}>
         <TextField label={label} color={errorField ? 'error' : 'primary'} focused={Boolean(errorField)} />
       </InputMask>
-      {errorField && <Typography color="error" variant="subtitle2">{errorField.message}</Typography>}
+      {errorField && <Typography color="error" fontSize='0.8rem'>{errorField.message}</Typography>}
     </div>
   </>;
 }

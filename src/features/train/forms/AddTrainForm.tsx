@@ -77,6 +77,7 @@ const AddTrainForm = () => {
   return (
     <>
       <Form<NewTrainInputs>
+        label='Add new train'
         onSubmit={onSubmit}
         form={form}
         submitButton={{

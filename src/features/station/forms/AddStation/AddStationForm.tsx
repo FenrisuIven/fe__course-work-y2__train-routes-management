@@ -1,27 +1,20 @@
-import {DialogFormContainer} from "../../../../shared/components/form/DialogFormContainer.tsx";
 import {SubmitHandler, useForm} from "react-hook-form";
 import {NewStationInputs} from "../../schemas/NewStationInputs.ts";
-import Axios from "axios";
+import Axios, {AxiosError} from "axios";
 import {FormTextInput} from "../../../../shared/components/form/FormTextInput.tsx";
-import {FormValidationStatus} from "../../../types/FormValidationStatus.ts";
 import {Layer, Source} from "react-map-gl";
 
 import {APIResponse} from "../../../types/APIResponse.ts";
-import {useState} from "react";
+import {useRef, useState} from "react";
 import {GeoJSON} from "geojson";
 import CustomMap from "../../../map/CustomMap.tsx";
 
 import {point} from "@turf/turf";
 import Checkbox from '@mui/material/Checkbox';
 import {Box, Divider} from "@mui/material";
-
-const getRequiredLengthParams = (label: string, length: number) => ({
-  required: true,
-  minLength: {
-    value: length,
-    message: `${label} must be at least 6 characters long`
-  },
-});
+import Form from "../../../../shared/components/form/Form.tsx";
+import {DialogFormRef} from "../../../types/DialogFormRef.ts";
+import getRequiredLengthParams from "../../../../lib/getRequiredLengthParams.ts";
 
 const latLonParams = {
   required: true,
@@ -32,11 +25,13 @@ const latLonParams = {
 };
 
 const AddStationForm = () => {
-  const {register, handleSubmit, formState: {errors}, getValues, subscribe, setValue} = useForm<NewStationInputs>({
+  const form = useForm<NewStationInputs>({
     mode: "onSubmit",
     reValidateMode: "onSubmit"
   });
-  const onSubmit: SubmitHandler<NewStationInputs> = (data) => console.log({data});
+  const {register, formState: {errors}, reset, subscribe, setValue} = form;
+
+  const dialogRef = useRef<DialogFormRef>(null);
 
   const [rawLat, setRawLat] = useState<number>(0);
   const [rawLon, setRawLon] = useState<number>(0);
@@ -68,32 +63,66 @@ const AddStationForm = () => {
     }
   };
 
-  return <>
-    <DialogFormContainer
-      title="Add new station"
-      className="add-station-form-container"
-      buttons={{
-        confirm: {
-          label: 'Add',
-          type: 'submit',
-          handler: async (): Promise<FormValidationStatus<NewStationInputs>> => {
-            const submitHandler = handleSubmit(onSubmit);
-            await submitHandler();
+  const onSubmit =
+    (updateSnackbar?: (status: {
+      error: boolean,
+      message: string
+    }) => void): SubmitHandler<NewStationInputs> => {
+      return async (entryData): Promise<void> => {
+        try {
+          const response = await Axios.post<APIResponse>('http://localhost:3000/station/new', {
+            ...entryData,
+            active: false
+          });
+          const isSuccess = !response.data.data.error;
 
-            const isInputValid = Object.keys(errors).length === 0;
-            const values = getValues();
-
-            return {isInputValid, values};
+          if (updateSnackbar) {
+            updateSnackbar({
+              error: !isSuccess,
+              message: !isSuccess ? response.data.data.message || 'Unspecified error occured' : 'New station created'
+            });
           }
-        },
+
+          reset();
+          dialogRef.current?.close();
+
+          return;
+        } catch (e) {
+
+          if (e instanceof AxiosError) {
+            if (updateSnackbar) {
+              updateSnackbar({
+                error: true,
+                message: e.response?.data?.data?.message || 'Failed to create new station'
+              });
+            }
+            return;
+          }
+
+          if (updateSnackbar) {
+            updateSnackbar({
+              error: true,
+              message: 'Unknown error occurred'
+            });
+          }
+        }
+        return;
+      }
+    };
+
+  return <>
+    <Form<NewStationInputs>
+      label='Add new station'
+      onSubmit={onSubmit}
+      form={form}
+      submitButton={{
+        label: "Save",
+        type: "submit"
       }}
-      onSubmit={async (entryData) => {
-        const response = await Axios.post<APIResponse>('http://localhost:3000/station/new', entryData)
-        return response.data;
-      }}
+      ref={dialogRef}
     >
-      <form onSubmit={handleSubmit(onSubmit)} style={{display: 'flex', gap: '2rem'}}>
-        <div style={{display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '0.5rem'}}>
+      <div style={{display: 'flex', gap: '1rem'}}>
+        <div style={{display: 'flex', flexDirection: 'column', gap: '1rem'}}>
           <FormTextInput
             label={"Name"}
             errorField={errors.name}
@@ -169,8 +198,8 @@ const AddStationForm = () => {
             </Source>
           </CustomMap>
         </div>
-      </form>
-    </DialogFormContainer>
+      </div>
+    </Form>
   </>
 }
 

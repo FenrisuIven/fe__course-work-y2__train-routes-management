@@ -24,7 +24,6 @@ const SchedulePage = observer(() => {
       const url = searchValue && searchBy ?
         `http://localhost:3000/schedule/find?value=${searchValue}&inColumn=${searchBy}`
         : 'http://localhost:3000/schedule';
-      console.log(url)
       return fetchApiResponse.get({url});
     },
     enabled: false,
@@ -63,6 +62,8 @@ const SchedulePage = observer(() => {
       />
       <Divider />
       <div style={{display: 'flex', gap: '0.5rem', padding: '0.5rem'}}>
+        <TempViewStationPos />
+        <AddStationForm />
       </div>
     </div>
   </>

@@ -1,11 +1,9 @@
-import {DialogFormContainer} from "../../../../shared/components/form/DialogFormContainer.tsx";
 import {Controller, SubmitHandler, useFieldArray, useForm} from "react-hook-form";
 import {NewRouteInputs} from "../../schemas/NewRouteInputs.ts";
-import Axios from "axios";
-import {FormValidationStatus} from "../../../types/FormValidationStatus.ts";
+import Axios, {AxiosError} from "axios";
 
 import {APIResponse} from "../../../types/APIResponse.ts";
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {GeoJSON} from "geojson";
 import CustomMap from "../../../map/CustomMap.tsx";
 
@@ -15,12 +13,15 @@ import {Source, Layer} from "react-map-gl";
 import {FormTextInput} from "../../../../shared/components/form/FormTextInput.tsx";
 import AddIcon from '@mui/icons-material/Add';
 import {TrainStopData} from "../../../trainStop/types/TrainStopData.ts";
+import Form from "../../../../shared/components/form/Form.tsx";
+import {DialogFormRef} from "../../../types/DialogFormRef.ts";
+import getRequiredLengthParams from "../../../../lib/getRequiredLengthParams.ts";
 
 const SelectTrainStop = ({stops, onChange, value, selectedIDs}: {
   stops: { rows: TrainStopData[] },
   onChange: (e: SelectChangeEvent) => void,
-  value?: number,
-  selectedIDs?: number[]
+  value?: { id: number },
+  selectedIDs?: { id: number }[]
 }) => {
   return <>
     <Select
@@ -40,7 +41,7 @@ const SelectTrainStop = ({stops, onChange, value, selectedIDs}: {
           <MenuItem
             value={stop.id}
             key={stop.id}
-            disabled={selectedIDs.includes(stop.id)}
+            disabled={selectedIDs?.some(selected => selected.id === stop.id)}
           >
             {stop.id}: {stop.name}, {stop.stationCity}, {stop.stationRegion}
           </MenuItem>
@@ -60,19 +61,24 @@ const NewRouteForm = () => {
     enabled: false
   });
 
-  const {register, handleSubmit, formState: {errors}, getValues, subscribe, control} = useForm<NewRouteInputs>({
+  const form = useForm<NewRouteInputs>({
     mode: "onSubmit",
     reValidateMode: "onSubmit"
   });
-  const onSubmit: SubmitHandler<NewRouteInputs> = (data) => console.log({data});
+  const {register, subscribe, control, reset, formState: {errors}} = form;
+
+  const dialogRef = useRef<DialogFormRef>(null);
 
   const {fields, append} = useFieldArray({
     control,
-    name: 'stops'
+    name: 'stops',
+    rules: {
+      minLength: 3
+    }
   });
 
   const [selectedStations, setSelectedStations] = useState<GeoJSON>({type: "FeatureCollection", features: []})
-  const [selectedIDs, setSelectedIDs] = useState<number[]>([]);
+  const [selectedIDs, setSelectedIDs] = useState<{ id: number }[]>([]);
 
   useEffect(() => console.log({selectedStations}), [selectedStations]);
 
@@ -81,10 +87,12 @@ const NewRouteForm = () => {
     exact: true,
     callback: ({values}) => {
       if (values.stops) {
-        const coords = values.stops.map((stop: number) => {
+        const coords = values.stops.map((stop) => {
           return stops?.rows.find(row => row.id === stop)?.stopPosition || []
         });
+
         if (coords.at(-1)?.length === 0) return;
+
         setSelectedStations({
           type: 'Feature',
           properties: {},
@@ -111,42 +119,75 @@ const NewRouteForm = () => {
     refetch()
   });
 
-  return <>
-    <DialogFormContainer
-      title="New route"
-      className="new-route-form-container"
-      buttons={{
-        confirm: {
-          label: 'Create',
-          type: 'submit',
-          handler: async (): Promise<FormValidationStatus> => {
-            const submitHandler = handleSubmit(onSubmit);
-            await submitHandler();
+  const onSubmit =
+    (updateSnackbar?: (status: {
+      error: boolean,
+      message: string
+    }) => void): SubmitHandler<NewRouteInputs> => {
+      return async (entryData): Promise<void> => {
+        try {
+          const response = await Axios.post<APIResponse>('http://localhost:3000/route/new', {
+            ...entryData,
+            active: false
+          });
+          const isSuccess = !response.data.data.error;
 
-            const isInputValid = Object.keys(errors).length === 0;
-            const values = getValues();
-
-            return {isInputValid, values};
+          if (updateSnackbar) {
+            updateSnackbar({
+              error: !isSuccess,
+              message: !isSuccess ? response.data.data.message || 'Unspecified error occured' : 'New route created'
+            });
           }
-        },
-      }}
-      onSubmit={async (entryData) => {
-        const response = await Axios.post<APIResponse>('http://localhost:3000/routes/new', entryData)
-        return response.data;
-      }}
-    >
-      <form onSubmit={handleSubmit(onSubmit)} style={{display: 'flex', gap: '2rem'}}>
-        <div style={{display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '0.5rem'}}>
-          <FormTextInput label='Route name' register={register('name', {
-            required: true,
-            minLength: {
-              value: 4,
-              message: 'Route name must be at least 4 characters long'
+
+          reset();
+          dialogRef.current?.close();
+
+          return;
+        } catch (e) {
+
+          if (e instanceof AxiosError) {
+            if (updateSnackbar) {
+              updateSnackbar({
+                error: true,
+                message: e.response?.data?.data?.message || 'Failed to create new train'
+              });
             }
-          })} />
+            return;
+          }
+
+          if (updateSnackbar) {
+            updateSnackbar({
+              error: true,
+              message: 'Unknown error occurred'
+            });
+          }
+        }
+        return;
+      }
+    };
+
+  return <>
+    <Form<NewRouteInputs>
+      label='Add new route'
+      onSubmit={onSubmit}
+      form={form}
+      submitButton={{
+        label: "Save",
+        type: "submit"
+      }}
+      ref={dialogRef}
+    >
+      <div style={{display: 'flex', gap: '1rem'}}>
+        <div style={{display: 'flex', flexDirection: 'column', gap: '1rem'}}>
+          <FormTextInput
+            label='Route name'
+            register={register('name', getRequiredLengthParams('Route', 4))}
+            errorField={errors.name}
+          />
           <Divider />
           <Typography>Stops on route</Typography>
-          {fields.map((field, index) =>
+          {errors.stops && <Typography color='error' fontSize='0.8rem'>At least 3 stops are required</Typography>}
+          {fields.map((_field, index) =>
             <Controller
               name={`stops.${index}`}
               render={({field: {onChange, value}}) =>
@@ -173,8 +214,8 @@ const NewRouteForm = () => {
             </Source>
           </CustomMap>
         </div>
-      </form>
-    </DialogFormContainer>
+      </div>
+    </Form>
   </>
 }
 

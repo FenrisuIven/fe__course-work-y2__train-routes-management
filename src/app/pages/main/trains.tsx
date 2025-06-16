@@ -11,6 +11,7 @@ import {GridColDef} from "@mui/x-data-grid";
 
 const TrainsPage = observer(() => {
   const {
+    searchBy,
     searchValue,
     setDisplaySearchEnv,
     setSearchByOptions
@@ -19,7 +20,12 @@ const TrainsPage = observer(() => {
 
   const {data: apiResponse, isRefetching, refetch} = useQuery({
     queryKey: ['data'],
-    queryFn: () => fetchApiResponse.get({url: 'http://localhost:3000/train'}),
+    queryFn: () => {
+      const url = searchValue && searchBy ?
+        `http://localhost:3000/train/find?value=${searchValue}&inColumn=${searchBy}`
+        : 'http://localhost:3000/train';
+      return fetchApiResponse.get({url});
+    },
     enabled: false,
   });
 
@@ -37,7 +43,9 @@ const TrainsPage = observer(() => {
 
   useEffect(() => {
     if (apiResponse?.data) {
-      const values = Object.keys(apiResponse.data.rows[0]).filter(key => !key.toLowerCase().includes('id'));
+      const rows = searchValue && searchBy ? apiResponse?.data : apiResponse?.data?.rows;
+      if (!rows || !rows[0]) return;
+      const values = Object.keys(rows[0] || {}).slice(1);
       setSearchByOptions(values);
     }
   }, [apiResponse?.data])

@@ -3,7 +3,8 @@ import {PropsWithChildren, RefObject, useState} from "react";
 import {DialogFormContainer} from "./DialogFormContainer.tsx";
 import {Alert, Snackbar} from "@mui/material";
 
-const Form = <T extends object>({onSubmit, form, ref, children}: {
+const Form = <T extends object>({label, onSubmit, form, ref, children, submitButton}: {
+  label: string,
   onSubmit: (updateSnackbar: (status: { error: boolean, message: string }) => void) => SubmitHandler<T>,
   form: UseFormReturn<T>,
   submitButton: {
@@ -34,11 +35,11 @@ const Form = <T extends object>({onSubmit, form, ref, children}: {
   return (
     <>
       <DialogFormContainer
-        title="Add new voyage"
+        title={label}
         buttons={{
           confirm: {
-            label: "Add",
-            type: "submit",
+            label: submitButton.label,
+            type: submitButton.type,
             handler: form.handleSubmit(onSubmit(updateSnackbar))
           },
         }}

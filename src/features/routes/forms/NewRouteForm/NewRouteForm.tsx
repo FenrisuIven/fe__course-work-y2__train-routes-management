@@ -71,7 +71,7 @@ const NewRouteForm = () => {
 
   const {fields, append} = useFieldArray({
     control,
-    name: 'stops',
+    name: 'stopIDs',
     rules: {
       minLength: 3
     }
@@ -86,8 +86,8 @@ const NewRouteForm = () => {
     formState: {values: true},
     exact: true,
     callback: ({values}) => {
-      if (values.stops) {
-        const coords = values.stops.map((stop) => {
+      if (values.stopIDs) {
+        const coords = values.stopIDs.map((stop) => {
           return stops?.rows.find(row => row.id === stop)?.stopPosition || []
         });
 
@@ -101,7 +101,7 @@ const NewRouteForm = () => {
             coordinates: coords
           }
         });
-        setSelectedIDs(values.stops);
+        setSelectedIDs(values.stopIDs);
       }
     }
   });
@@ -125,8 +125,9 @@ const NewRouteForm = () => {
       message: string
     }) => void): SubmitHandler<NewRouteInputs> => {
       return async (entryData): Promise<void> => {
+        console.log({entryData})
         try {
-          const response = await Axios.post<APIResponse>('http://localhost:3000/route/new', {
+          const response = await Axios.post<APIResponse>('http://localhost:3000/routes/new', {
             ...entryData,
             active: false
           });
@@ -144,12 +145,12 @@ const NewRouteForm = () => {
 
           return;
         } catch (e) {
-
+          console.log({e})
           if (e instanceof AxiosError) {
             if (updateSnackbar) {
               updateSnackbar({
                 error: true,
-                message: e.response?.data?.data?.message || 'Failed to create new train'
+                message: e.response?.data?.data?.message || 'Failed to create new route'
               });
             }
             return;
@@ -186,10 +187,10 @@ const NewRouteForm = () => {
           />
           <Divider />
           <Typography>Stops on route</Typography>
-          {errors.stops && <Typography color='error' fontSize='0.8rem'>At least 3 stops are required</Typography>}
+          {errors.stopIDs && <Typography color='error' fontSize='0.8rem'>At least 3 stops are required</Typography>}
           {fields.map((_field, index) =>
             <Controller
-              name={`stops.${index}`}
+              name={`stopIDs.${index}`}
               render={({field: {onChange, value}}) =>
                 <SelectTrainStop onChange={(e) => {
                   onChange(e.target.value)

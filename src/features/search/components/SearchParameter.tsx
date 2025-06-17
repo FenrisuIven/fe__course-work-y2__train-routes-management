@@ -7,7 +7,7 @@ const SearchParameter = ({options, sx}: { options: string[], sx: SxProps }) => {
 
   return (
     <FormControl variant="standard" size="small" sx={sx}>
-      <InputLabel id="search-parameter-label">Search by</InputLabel>
+      <InputLabel id="search-parameter-label" color='secondary'>Search by</InputLabel>
       <Select
         labelId="search-parameter-label"
         id="search-parameter"
@@ -16,6 +16,7 @@ const SearchParameter = ({options, sx}: { options: string[], sx: SxProps }) => {
           width: "12ch",
           paddingX: "0.6rem",
         }}
+        color='secondary'
         onChange={(e) => {
           setSearchBy(e.target.value)
         }}

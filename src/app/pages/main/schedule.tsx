@@ -62,8 +62,6 @@ const SchedulePage = observer(() => {
       />
       <Divider />
       <div style={{display: 'flex', gap: '0.5rem', padding: '0.5rem'}}>
-        <TempViewStationPos />
-        <AddStationForm />
       </div>
     </div>
   </>
